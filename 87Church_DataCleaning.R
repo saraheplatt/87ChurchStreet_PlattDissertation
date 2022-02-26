@@ -14,7 +14,7 @@ library(viridis)
 # Read in CSV of Past Perfect data
 
 InitialImportData<- read.csv(file = '87Church_Raw_PastPerfect_Feb2020_Final.csv', 
-                        fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
+                             fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Eliminate all columns except for the variables I will be using in the dissertation
 
@@ -27,7 +27,7 @@ CMTypesA <- StreamlinedData %>%
   select(PARENT, OBJNAME, COUNT)
 
 CMTypesB <- CMTypesA %>% group_by(PARENT, OBJNAME) %>% 
-          summarise(Count=sum(COUNT))
+  summarise(Count=sum(COUNT))
 
 # Eliminate non-ceramics and non-vessel ceramic records. This data was not wholly collected 
 # and will not be used in any large dissertation analyses except for singular artifacts.
@@ -104,7 +104,7 @@ StreamlinedDataH1 <- StreamlinedDataH1 %>%
 
 # Check the results
 
-  CMContextsUnitSum2 <-  StreamlinedDataH1 %>% 
+CMContextsUnitSum2 <-  StreamlinedDataH1 %>% 
   group_by(NewUNIT) %>% 
   summarise(Count = sum(COUNT))
 
@@ -369,8 +369,8 @@ StreamlinedDataH3 <- StreamlinedDataH2 %>%
   mutate(NewLEVEL=ifelse(LEVEL %in% 'Patio III', 'PIII', NewLEVEL)) %>%
   mutate(NewLEVEL=ifelse(LEVEL %in% 'Surface', 'SURF', NewLEVEL)) %>%
   mutate(NewLEVEL=ifelse(LEVEL %in% 'surface', 'SURF', NewLEVEL))
-  
- # Check results
+
+# Check results
 
 CMContextsLevelSum <-  StreamlinedDataH3 %>% 
   group_by(NewLEVEL) %>% 
@@ -381,7 +381,7 @@ CMContextsLevelSum <-  StreamlinedDataH3 %>%
 CMContextsSum <-  StreamlinedDataH3 %>% 
   group_by(NewUNIT, NewLEVEL, FEATURE) %>% 
   summarise(Count = sum(COUNT))
-  
+
 ### Here start correcting some of these levels based on the relationships
 
 StreamlinedDataH4 <- within(StreamlinedDataH3, FEATURE[NewLEVEL == 'b' & FEATURE == '65'] <- '065b')
@@ -658,7 +658,7 @@ StreamlinedDataH5 <- within(StreamlinedDataH5, NewFEATURE[NewLEVEL == 'UNPROV' &
 # A Unit checks. Here, I am primarily eliminating any level or unit designations from features.
 
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewUNIT[NewLEVEL == '02' & NewUNIT == 'A00' & NewFEATURE 
-                                                          == '038'] <- NA)
+                                                       == '038'] <- NA)
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewLEVEL[NewLEVEL == '02' & NewFEATURE == '038'] <- NA)
 
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewUNIT[NewLEVEL == '05' & NewUNIT == 'A04' & NewFEATURE 
@@ -676,9 +676,9 @@ StreamlinedDataH5 <- within(StreamlinedDataH5, NewUNIT[NewLEVEL == '06' & NewUNI
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewLEVEL[NewLEVEL == '06' & NewFEATURE == '037bf'] <- NA)
 
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewFEATURE[NewLEVEL == '06BF' & NewUNIT == 'A05' & NewFEATURE 
-                                                       == '037'] <- '037bf')
+                                                          == '037'] <- '037bf')
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewUNIT[NewLEVEL == '06BF' & NewUNIT == 'A05' & NewFEATURE 
-                                                          == '037bf'] <- NA)
+                                                       == '037bf'] <- NA)
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewLEVEL[NewLEVEL == '06BF' & NewFEATURE == '037bf'] <- NA)
 
 StreamlinedDataH5 <- within(StreamlinedDataH5, NewUNIT[NewUNIT == 'A06' & NewFEATURE == '112'] <- NA)
@@ -878,6 +878,16 @@ StreamlinedDataH6$DAACSCONT <- paste(StreamlinedDataH6b$NewUNIT, "|",
                                      StreamlinedDataH6b$NewLEVEL, "|",
                                      StreamlinedDataH6b$NewFEATURE)
 
+# Added leading Ls and Fs to levels and features because excel sucks
+
+StreamlinedDataH6$NewFEATURE <- paste('F', StreamlinedDataH6$NewFEATURE, sep = "")
+StreamlinedDataH6$NewLEVEL <- paste('L', StreamlinedDataH6$NewLEVE, sep = "")
+
+StreamlinedDataH6 <- within(StreamlinedDataH6, NewLEVEL[NewLEVEL == 'LNA'] <- NA)
+StreamlinedDataH6 <- within(StreamlinedDataH6, NewFEATURE[NewFEATURE == 'FNA'] <- NA)
+StreamlinedDataH6 <- within(StreamlinedDataH6, NewLEVEL[NewLEVEL == 'LUNPROV'] <- 'UNPROV')
+StreamlinedDataH6 <- within(StreamlinedDataH6, NewFEATURE[NewFEATURE == 'FUNPROV'] <- 'UNPROV')
+
 HeroldContextsFixed <- StreamlinedDataH6
 
 #### 5. Create new variables called DAACSWARE, DAACSCEW, and DAACSDECGENRE. These variables
@@ -886,8 +896,8 @@ HeroldContextsFixed <- StreamlinedDataH6
 
 # Load in CSV of created DAACS/Charleston Museum equivalencies 
 
-WareEquivalencies<- read.csv(file = 'DAACS.CMWareEquivalencies.csv', 
-                                  fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
+WareEquivalencies<- read.csv(file = '87Church_DAACSWareEquivalencies.csv', 
+                             fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Unite the Ware Equivalencies with the cleaned Herold Data
 
@@ -974,7 +984,7 @@ FINALchecks <-  FINALCompiled %>%
 # Make final fixes
 
 FINALCompiled$CEW <- with(FINALCompiled, ifelse(CEW=='Lesesne Colono (CMT)', 'Lesesne',
-                                                              CEW))
+                                                CEW))
 FINALCompiled$CEW <- with(FINALCompiled, ifelse(CEW=='River-burnished ColonoCMT', 'River Burnished',
                                                 CEW))
 FINALCompiled$CEW <- with(FINALCompiled, ifelse(CEW== 'Stobo Colono (CMT)', 'Stobo',
