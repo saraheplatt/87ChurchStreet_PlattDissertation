@@ -8,6 +8,7 @@ library(reshape2)
 library (plotrix)
 library(ggplot2)
 library(viridis)
+library(data.table)
 
 #### 1. Initial PastPerfect data upload and streamlining 
 
@@ -876,7 +877,7 @@ StreamlinedDataH6b[is.na(StreamlinedDataH6b)] <- ""
 
 StreamlinedDataH6$DAACSCONT <- paste(StreamlinedDataH6b$NewUNIT, "|", 
                                      StreamlinedDataH6b$NewLEVEL, "|",
-                                     StreamlinedDataH6b$NewFEATURE)
+                                     StreamlinedDataH6b$NewFEATURE, sep = "")
 
 # Added leading Ls and Fs to levels and features because excel sucks
 
@@ -994,11 +995,218 @@ FINALCompiled$CEW <- with(FINALCompiled, ifelse(CEW== 'Yaughan Colono (CMT)', 'Y
 FINALCompiled$CEW <- with(FINALCompiled, ifelse(CEW=='River-burnished ColonoCMT', 'River-Burnished',
                                                 CEW))
 
-write.csv(FINALCompiled,"87Church_CompiledDataset.csv", row.names = TRUE)
+# Add site components
+
+FINALCompiledB <-FINALCompiled
+FINALCompiledB$COMPONENT <- NA
+
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^A'] <- 'WORKYARD')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^B'] <- 'WORKYARD')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^C'] <- 'CELLAR')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^D'] <- 'DRIVEWAY')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^E'] <- 'SIDEWALK')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^HWK'] <- 'KITCHEN')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[UNIT %like% '^HWN'] <- 'PRIVY')
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[OBJECTID %like% '^1307'] <- 'STABLE')
+
+# Add excavation blocks
+
+FINALCompiledB$BLOCK <- NA
+
+FINALCompiledB <- within(FINALCompiledB, BLOCK[UNIT %like% '^A'] <- 'A')
+FINALCompiledB <- within(FINALCompiledB, BLOCK[UNIT %like% '^B'] <- 'B')
+FINALCompiledB <- within(FINALCompiledB, BLOCK[UNIT %like% '^C'] <- 'B')
+FINALCompiledB <- within(FINALCompiledB, BLOCK[UNIT %like% '^D'] <- 'C')
+FINALCompiledB <- within(FINALCompiledB, BLOCK[UNIT %like% '^E'] <- 'D')
+
+# Add unprov column 
+
+FINALCompiledB$UNPROV <- NA
+
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %ilike% 'UNPROV' | LEVEL %ilike% 
+                                                 'UNPROV'] <- 'yUNPROV')
+
+#Flag individual contexts as unprov, these are all stable contexts that are 
+# out of context or are cleanup contexts as noted in Zierden's 2007
+# site report
+
+FINALCompiledB <- within(FINALCompiledB, UNPROV[CONTEXT == '02-01-040' | CONTEXT ==
+                                                  '02-02-043' | CONTEXT ==
+                                                  '02-02-075' | CONTEXT ==
+                                                  '02-01-082' | CONTEXT ==
+                                                  '02-03-089' | CONTEXT ==
+                                                  '02-04-092' | CONTEXT ==
+                                                  '02-02-093' | CONTEXT ==
+                                                  '02-04-101' | CONTEXT ==
+                                                  '02-03-106' | CONTEXT ==
+                                                  '02-05-117' | CONTEXT ==
+                                                  '02-04-137' | CONTEXT ==
+                                                  '02-06-139' | CONTEXT ==
+                                                  '02-06-145' | CONTEXT ==
+                                                  '02-06-162' | CONTEXT ==
+                                                  '02-07-164' | CONTEXT ==
+                                                  '02-06-170' | CONTEXT ==
+                                                  '02-030507-175'] <- 'yUNPROV')
+
+# Flag units lacking vertical context as unprov
+
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^A' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^B' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^C' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^D' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^E' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^HWK' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %like% '^HWN' & 
+                                                  is.na(LEVEL)] <- 'yUNPROV')
+
+# Check results
+
+FINALchecksC <-  FINALCompiledB %>% 
+  group_by(CONTEXT, UNIT, LEVEL, FEATURE, UNPROV) %>% 
+  summarise(Count = sum(COUNT))
+
+# Add component designation to features where known
+
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[FEATURE %like% 
+                                                    '^F021' | FEATURE %like%
+                                                  '^F026' | FEATURE %like%
+                                                  '^F027' | FEATURE %like%
+                                                  '^F028' | FEATURE %like%
+                                                  '^F030' | FEATURE %like%
+                                                  '^F031' | FEATURE %like%
+                                                  '^F032' | FEATURE %like%
+                                                  '^F033' | FEATURE %like%
+                                                  '^F034' | FEATURE %like%
+                                                  '^F035' | FEATURE %like%
+                                                  '^F036' | FEATURE %like%
+                                                  '^F037' | FEATURE %like%
+                                                  '^F038' | FEATURE %like%
+                                                  '^F041' | FEATURE %like%
+                                                  '^F042' | FEATURE %like%
+                                                  '^F043' | FEATURE %like%
+                                                  '^F044' | FEATURE %like%
+                                                  '^F045' | FEATURE %like%
+                                                    '^F047' | FEATURE %like%
+                                                    '^F048' | FEATURE %like%
+                                                    '^F049' | FEATURE %like%
+                                                    '^F051' | FEATURE %like%
+                                                    '^F053'| FEATURE %like%
+                                                    '^F055' | FEATURE %like%
+                                                    '^F056' | FEATURE %like%
+                                                    '^F057' | FEATURE %like%
+                                                    '^F058' | FEATURE %like%
+                                                    '^F060' | FEATURE %like%
+                                                    '^F061' | FEATURE %like%
+                                                    '^F063' | FEATURE %like%
+                                                    '^F064' | FEATURE %like%
+                                                    '^F065'| FEATURE %like%
+                                                    '^F067' | FEATURE %like%
+                                                    '^F072' | FEATURE %like%
+                                                    '^F073' | FEATURE %like%
+                                                    '^F074' | FEATURE %like%
+                                                    '^F075' | FEATURE %like%
+                                                    '^F076' | FEATURE %like%
+                                                    '^F077' | FEATURE %like%
+                                                    '^F078'| FEATURE %like%
+                                                    '^F079' | FEATURE %like%
+                                                    '^F089' | FEATURE %like%
+                                                    '^F090' | FEATURE %like%
+                                                    '^F091' | FEATURE %like%
+                                                    '^F093' | FEATURE %like%
+                                                    '^F094' | FEATURE %like%
+                                                    '^F098' | FEATURE %like%
+                                                    '^F099' | FEATURE %like%
+                                                    '^F100'| FEATURE %like%
+                                                    '^F101' | FEATURE %like%
+                                                    '^F102' | FEATURE %like%
+                                                    '^F103' | FEATURE %like%
+                                                    '^F104' | FEATURE %like%
+                                                    '^F110' | FEATURE %like%
+                                                    '^F111' | FEATURE %like%
+                                                    '^F112' | FEATURE %like%
+                                                    '^F119' | FEATURE %like%
+                                                    '^F123' | FEATURE %like%
+                                                    '^F124'| FEATURE %like%
+                                                    '^F125' | FEATURE %like%
+                                                    '^F127' | FEATURE %like%
+                                                    '^F128' | FEATURE %like%
+                                                    '^F129' | FEATURE %like%
+                                                    '^F132' | FEATURE %like%
+                                                    '^F133' | FEATURE %like%
+                                                    '^F136' | FEATURE %like%
+                                                    '^F137' | FEATURE %like%
+                                                    '^F139'| FEATURE %like%
+                                                    '^F140' | FEATURE %like%
+                                                    '^F142' | FEATURE %like%
+                                                    '^F143' | FEATURE %like%
+                                                    '^F144' | FEATURE %like%
+                                                    '^F145' | FEATURE %like%
+                                                    '^F148' | FEATURE %like%
+                                                    '^F150' | FEATURE %like%
+                                                    '^F154' | FEATURE %like%
+                                                    '^F157' | FEATURE %like%
+                                                    '^F159' | FEATURE %like%
+                                                    '^F161'| FEATURE %like%
+                                                    '^F163' | FEATURE %like%
+                                                    '^F164' | FEATURE %like%
+                                                    '^F165' | FEATURE %like%
+                                                    '^F166' | FEATURE %like%
+                                                    '^F168' | FEATURE %like%
+                                                    '^F170' | FEATURE %like%
+                                                    '^F171' | FEATURE %like%
+                                                    '^F172' | FEATURE %like%
+                                                    '^F173'| FEATURE %like%
+                                                    '^F176' | FEATURE %like%
+                                                    '^F179' | FEATURE %like%
+                                                    '^F180'| FEATURE %like%
+                                                    '^F181' | FEATURE %like%
+                                                    '^F183' | FEATURE %like%
+                                                    '^F184' | FEATURE %like%
+                                                    '^F185' | FEATURE %like%
+                                                    '^F188' | FEATURE %like%
+                                                    '^F190' | FEATURE %like%
+                                                    '^F191' | FEATURE %like%
+                                                    '^F192' | FEATURE %like%
+                                                    '^F193' | FEATURE %like%
+                                                    '^F195' | FEATURE %like%
+                                                    '^F198'| FEATURE %like%
+                                                    '^F199' | FEATURE %like%
+                                                    '^F200' | FEATURE %like%
+                                                    '^F201' | FEATURE %like%
+                                                    '^F131' ] <- 'WORKYARD')
+
+FINALCompiledB <- within(FINALCompiledB, COMPONENT[FEATURE %like% 
+                                                     '^F001' | FEATURE %like%
+                                                     '^F002' | FEATURE %like%
+                                                     '^F003' | FEATURE %like%
+                                                     '^F004' | FEATURE %like%
+                                                     '^F005' | FEATURE %like%
+                                                     '^F006' | FEATURE %like%
+                                                     '^F007' | FEATURE %like%
+                                                     '^F008' | FEATURE %like%
+                                                     '^F009' ] <- 'KITCHEN')
+
+# Quick check on kitchen features
+
+FINALchecksD <-  FINALCompiledB %>% 
+  group_by(UNIT, LEVEL, FEATURE, UNPROV) %>% 
+  summarise(Count = sum(COUNT))
+
+# Quick unprov fix
+
+FINALCompiledB <- within(FINALCompiledB, UNPROV[FEATURE == 'F006'] <- NA)
+FINALCompiledB <- within(FINALCompiledB, UNIT[FEATURE == 'F006'] <- NA)
+
+# Download CSV
+
+write.csv(FINALCompiledB,"87Church_CompiledDataset.csv", row.names = TRUE)
 
 # Please note, a series of transformations occurred outside of R due to ease
 # and available time. These include the updating of a number of DAACS artifact
-# IDs to reflect the addition of the ware type Slip-Coated. Additional columns
-# were added to the dataset including site component, unprov (TRUE OR FALSE), 
-# and excavation block. This new CSV is distinguished by the file name
-# 87Church_CompiledDatasetFIN
+# IDs to reflect the addition of the ware type Slip-Coated. 
