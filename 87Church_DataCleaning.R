@@ -1209,4 +1209,6 @@ write.csv(FINALCompiledB,"87Church_CompiledDataset.csv", row.names = TRUE)
 
 # Please note, a series of transformations occurred outside of R due to ease
 # and available time. These include the updating of a number of DAACS artifact
-# IDs to reflect the addition of the ware type Slip-Coated. 
+# IDs to reflect the addition of the ware type Slip-Coated. There are also two 
+# artifact records (ARL 504353.1 and .2 ) I updated to UNPROV by 
+# hand due to available time
