@@ -1,18 +1,10 @@
-# MCD-CA Code.R
+# 87Church_ChronoCA_AllData.R
 # Created by:  FDN  8.5.2014
+# This code in its original form was authored and developed by Dr. Fraser Neiman of
+# Monticello Archaeology and subsequently edited by Sarah Platt for use in
+# her dissertation.
 # Last update: FDN 8.5.2014  
-# Edited by:   LAB 1.17.2017 for Morne Patate
-# MCD-CA Code.R
-# Created by:  FDN  8.5.2014
-# Last update: FDN 8.5.2014  
-# Edited by:   LAB 1.17.2017 for Morne Patate
-# Edited by:   LC 12.4.2017 Hermitage phases
-# Edited by:   FDN 12.21.2018 more tidy; fixed MCD function to handle phases.
-# Edited by:   CP and EB 5.28.2019 Comments and Section editing for UR code
-# Edited by:   SEP 6.13.21 adapted to 87 Church Street data for Platt Diss. This script addresses just features
-#and stable data.
-# Edited by:   SEP 12.21.21 Rerun with Zierden SGs
-# Edited by:   SEP 3.6.22 Sarah final run with all CA data
+# Last Edit: SEP 2.11.2022 for dissertation
 
 # load the libraries
 library(dplyr)
@@ -51,11 +43,6 @@ wareTypeDataB <- merge(wareTypeDataA, ZierdenSGs, by=
 
 PhasedData <- read.csv(file = 'Dissertation_Chronology/FeaStab_PhasedData.csv', 
                        fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
-
-# Streamline phased data
-
-PhasedData <- PhasedData %>%
-  select(CONTEXT, Phase)
 
 # Merge with current data
 
@@ -472,9 +459,14 @@ p2 <- ggplot(colScores, aes(x = Dim1,y = Dim2))+
 p2
 
 #add Stable/Feature phases
-rowScoresCompA <- select(wareTypeData_Unit, unit, SFPhase)
+rowScoresCompA <- select(wareTypeData_Unit, unit, SFPhase, COUNT)
 
-rowScoresCompB <- left_join (rowScores, rowScoresCompA, by = 'unit') %>%
+rowScoresCompA1 <- rowScoresCompA %>% group_by(unit, SFPhase) %>% 
+  summarise(Count = sum(COUNT))
+
+rowScoresCompA2 <- rowScoresCompA1 %>% select(unit, SFPhase)
+
+rowScoresCompB <- left_join (rowScores, rowScoresCompA2, by = 'unit') %>%
   mutate(Component = ifelse(is.na(SFPhase),'',SFPhase))
 
 rowScoresCompB[rowScoresCompB == ""] <- "NotAssign"
