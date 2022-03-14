@@ -300,7 +300,7 @@ MCDByUnit<-EstimateMCD(dataForMCD$unitData, dataForMCD$typeData)
 MCDByUnit
 
 # Export this data for basic reference
-write.csv((MCDByUnit[["MCDs"]]),"87Church_MCDS.TPQS.csv", row.names = FALSE)
+# write.csv((MCDByUnit[["MCDs"]]),"87Church_MCDS.TPQS.csv", row.names = FALSE)
 
 #### 10. Seriation diagram based on MCDs ####
 # First define a  function to sort the rows and cols of a matrix based on the
@@ -493,4 +493,164 @@ p1a <- ggplot(rowScoresCompB,aes(x = Dim1, y = Dim2,
        x = paste ("Dimension 1",":  ", round(inertia[1,]*100),'%', sep=''), 
        y= paste ("Dimension 2",":  ", round(inertia[2,]*100),'%', sep=''))
 p1a
+
+#### 13. Compare MCD and CA dim scores ####
+# create a data frame of units, counts, and mcds
+CA_MCD <- inner_join(MCDByUnit$MCDs, rowScores, by='unit' )
+
+# Plot CA Dim 1 vs. MCDs
+#ggplot version of CA Dim 1 vs. MCDs
+p3 <- ggplot(CA_MCD, aes(x=Dim1,y=blueMCD))+
+  geom_point(shape=21, size=5, colour="black", fill="cornflower blue")+
+  #geom_text(aes(label=unit),vjust=-.6, cex=5)+
+  theme(plot.title = element_text(hjust = 0.5))+
+  #geom_text_repel(aes(label=unit), cex=6) +
+  labs(title="87 Church Street - Stable/Herold Features", 
+       x="Dimension 1", 
+       y="BLUE MCD") 
+p3
+
+#ggplot version of CA Dim 2 vs. MCDs
+p4 <- ggplot(CA_MCD, aes(x = Dim2,y = blueMCD))+
+  geom_point(shape=21, size=5, colour="black", fill="cornflower blue")+
+  #geom_text(aes(label=unit),vjust=-.6, cex=5)+
+  #geom_text_repel(aes(label=unit), cex=6) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(title="87 Church Street", 
+       x="Dimension 2", 
+       y="BLUE MCD") 
+p4 
+
+#### 14. Histogram of Dim 1 scores for Phasing ####
+# Dim 1 Scores Weighted Histogram, you may need to change scale
+dim1ForHist<- data.frame(dim1 = rep(CA_MCD$Dim1, CA_MCD$Count))
+p5a <- ggplot(dim1ForHist, aes(x = dim1)) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_histogram(aes(y=..density..), colour="black", fill="tan", binwidth=0.1, 
+                 boundary= .1) +
+  scale_x_continuous(breaks=seq(-3, 3, .25))+
+  labs(title="87 Church Street - All Data", x="Dimension 1", y="Density") +
+  geom_density(fill=NA)
+p5a
+
+# Here is the 2d density estimate
+dim1dim2forHist <- data.frame(dim1 = rep(CA_MCD$Dim1, CA_MCD$Count), 
+                              dim2 = rep(CA_MCD$Dim2, CA_MCD$Count))
+library(ggrepel)
+set.seed(42)
+p5c <- ggplot(dim1dim2forHist, aes(x=dim1,y=dim2))+
+  geom_point(shape=21, size=5, colour="black", fill="cornflower blue")+
+  # geom_text(aes(label= unit,vjust=-.6, cex=5) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  #geom_text_repel(aes(label= unit), cex = 4) +
+  labs(title="87 Church Street - All Data", 
+       x = paste ("Dimension 1"), 
+       y= paste ("Dimension 2")
+  )
+p5c
+
+p5c + geom_density2d_filled(alpha = 0.5, binwidth=0.5) +
+  geom_density2d(size = 0.25, colour = "black")
+
+#Dim 2 Scores weighted histogram
+#### 14. Histogram of Dim 2 scores for Phasing ####
+# Dim 2 Scores Weighted Histogram, you may need to change scale
+dim2ForHist<- data.frame(dim2 = rep(CA_MCD$Dim2, CA_MCD$Count))
+p5b <- ggplot(dim2ForHist, aes(x = dim2)) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_histogram(aes(y=..density..), colour="black", fill="tan", binwidth=0.1, 
+                 boundary= .1) +
+  scale_x_continuous(breaks=seq(-3, 9, .5))+
+  labs(title="87 Church Street - All Data", x="Dimension 2", y="Density") +
+  geom_density(fill=NA)
+p5b
+
+
+# Add lines for phase breaks
+# Note -- don't do this until after you have removed outliers
+p5a1 <- p5a + geom_vline(xintercept=c(-1.15, -1, -.5, 0, .6), colour = "gray", linetype = "dashed",
+                         size=1)      
+p5a1
+
+p5b1 <- p5b + geom_vline(xintercept=c(.2, 2.5), colour = "gray", linetype = "dashed",
+                         size=1)      
+p5b1
+
+#### 15.  Do the Dim 1 -  MCD scatterplot with Phase assignments  ####
+# Do the Phase assigments, based on the Dim1 scores
+# Note, depending on how many phases you have you will need to add or comment out lines and update boundaries
+CA_MCD_PhaseB <- CA_MCD %>% mutate(Phase = case_when (((Dim1 >= 0.6) & (Dim2 <= 0.4)) ~ 'P01',
+                                                     ((Dim1 >= 0.6) & (Dim2 > 0.4)) ~ 'P01b',
+                                                     (((Dim1 >= 0) &(Dim1 < 0.6)) & (Dim2 <= 0.2)) ~ 'P02', 
+                                                     (((Dim1 >= 0) &(Dim1 < 0.6)) & (Dim2 > 0.2)) ~ 'P02b',
+                                                     (((Dim1 >= -0.5) &(Dim1 < 0)) & (Dim2 <= 0.2)) ~ 'P03',
+                                                     (((Dim1 >= -0.5) &(Dim1 < 0)) & (Dim2 > 0.2)) ~ 'P03b',
+                                                     ((Dim1 < -0.5) & (Dim2 <= 0.2)) ~ 'P04',
+                                                     ((Dim1 <= -1.2) & (Dim2 <= 2.5)) ~ 'P04b',
+                                                     ((Dim1 <= -1.3) & (Dim2 > 2.5)) ~ 'P04c'
+))
+
+CA_MCD_Phase <- within(CA_MCD_PhaseB, Phase[unit == 'C03 | 02 | '] <- 'P04b')
+CA_MCD_Phase <- within(CA_MCD_Phase, Phase[unit == 'HWK03 | 02 | '] <- 'P04b')
+
+CA_MCD_Phase <- within(CA_MCD_Phase, Phase[is.na(Phase)] <- 'P05')
+
+# BlueMCD By Dim1 plot by Phase
+# This one uses DAACS Website colors 
+# Be sure to adjust labels and and values accordingly, value for P03 is "darkblue"
+
+p6 <- ggplot(CA_MCD_Phase,aes(x = Dim1, y = blueMCD, 
+                              fill= Phase)) +
+  #scale_y_continuous(limits=c(1750, 1950)) +
+  geom_point(shape=21,  alpha = .75, size= 6)  +
+  scale_fill_brewer(name="DAACS Phase",
+                    palette = 'Set1') + 
+  #geom_text_repel(aes(label= unit), cex=4) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(title="87 Church Street - All Data", x="Dimension 1", y="BLUE MCD")
+p6
+
+#Try this with Dim1 Dim 2
+
+p6z <- ggplot(CA_MCD_Phase,aes(x = Dim1, y = Dim2, 
+                               fill= Phase)) +
+  #scale_y_continuous(limits=c(1750, 1950)) +
+  geom_point(shape=21,  alpha = .75, size= 6)  + 
+  scale_fill_brewer(name="DAACS Phase",
+                    palette = 'Set1') + 
+  #geom_text_repel(aes(label= unit), cex=4) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(title="87 Church Street - All Data", x="Dimension 1", y="Dimension 2")
+p6z
+
+##### 16. Compute the MCDs and TPQs for the phases ####
+
+# join the Phases to the ware by unit data
+unitPhase <- select(CA_MCD_Phase, unit, Phase) 
+
+unitPhaseb <- unitPhase %>% rename(CONTEXT = unit)
+
+wareByUnit_Phase<- left_join (wareTypeDataA, unitPhaseb, by = 'CONTEXT') %>%
+  mutate(Phase = ifelse(is.na(Phase),'',Phase))
+
+###Save this data as a CSV
+write.csv(wareByUnit_Phase,"87Church_PhasedData.csv", row.names = FALSE)
+
+# Transpose the data for the MCD and CA 
+wareByPhaseT <- wareByUnit_Phase %>% group_by(WARE, Phase) %>% 
+  summarise(count = sum(COUNT)) %>%
+  spread(WARE, value=count , fill=0 )
+
+
+dataForMCD_Phase <- RemoveTypesNoDates(wareByPhaseT, MCDTypeTable)
+
+# apply the Estimate MCD function
+MCDByPhase<-EstimateMCD(dataForMCD_Phase$unitData,
+                        dataForMCD_Phase$typeData)
+
+# let's see what it looks like
+MCDByPhase
+
+# Exported this data for The Charleston Museum
+write.csv((MCDByPhase[["MCDs"]]),"87Church_MCDsByPhase.csv", row.names = FALSE)
 
