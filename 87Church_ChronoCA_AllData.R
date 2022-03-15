@@ -478,14 +478,14 @@ p1a <- ggplot(rowScoresCompB,aes(x = Dim1, y = Dim2,
   #scale_y_continuous(limits=c(1750, 1950)) +
   geom_point(shape=21,  alpha = .75, size= 6)  + 
   scale_fill_manual(values = c(
-                              "P01" = "rosybrown",
-                              "P01B" = "salmon",
-                              "P02" = "orangered3",
-                              "P02B" = "orange4",
-                              "P03" = "darkgoldenrod3",
-                              "P03B" = "lightgoldenrod2",
-                              "P04" = "forestgreen",
-                              "P05" = "steelblue4",
+                              "P01" = "red",
+                              "P01B" = "blue",
+                              "P02" = "green",
+                              "P02B" = "purple",
+                              "P03" = "orange",
+                              "P03B" = "yellow",
+                              "P04" = "brown",
+                              "P05" = "pink",
                               "NotAssign" = "NA")) +
   #geom_text_repel(aes(label= unit), cex=4) +
   theme(plot.title = element_text(hjust = 0.5))+
@@ -493,6 +493,19 @@ p1a <- ggplot(rowScoresCompB,aes(x = Dim1, y = Dim2,
        x = paste ("Dimension 1",":  ", round(inertia[1,]*100),'%', sep=''), 
        y= paste ("Dimension 2",":  ", round(inertia[2,]*100),'%', sep=''))
 p1a
+
+p1a2 <- ggplot(rowScoresCompB,aes(x = Dim1, y = Dim2, 
+                                 fill= SFPhase)) +
+  #scale_y_continuous(limits=c(1750, 1950)) +
+  geom_point(shape=21,  alpha = .75, size= 6)  + 
+  scale_fill_brewer(name="SFPhase",
+                    palette = 'Set1')+
+  #geom_text_repel(aes(label= unit), cex=4) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(title="87 Church Street - All Data", 
+       x = paste ("Dimension 1",":  ", round(inertia[1,]*100),'%', sep=''), 
+       y= paste ("Dimension 2",":  ", round(inertia[2,]*100),'%', sep=''))
+p1a2
 
 #### 13. Compare MCD and CA dim scores ####
 # create a data frame of units, counts, and mcds

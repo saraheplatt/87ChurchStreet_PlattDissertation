@@ -600,7 +600,7 @@ p6z <- ggplot(CA_MCD_Phase,aes(x = Dim1, y = Dim2,
   geom_point(shape=21,  alpha = .75, size= 6)  + 
   scale_fill_brewer(name="DAACS Phase",
                     palette = 'Set1') + 
-  #geom_text_repel(aes(label= unit), cex=4) +
+  geom_text_repel(aes(label= unit), cex=4) +
   theme(plot.title = element_text(hjust = 0.5))+
   labs(title="87 Church Street - Stable and Herold Features", x="Dimension 1", y="Dimension 2")
 p6z
