@@ -25,7 +25,7 @@ MCDTypeTable<- read.csv(file = "Dissertation_Chronology/DAACS_MCDTypeTable.csv",
 # data is stored in a series of CSV files in the github repository
 # for the project
 
-wareTypeDataA <- read.csv(file = 'Dissertation_Chronology/87Church_CompiledDatasetB.csv', 
+wareTypeDataA <- read.csv(file = 'Dissertation_FinalDataCSVs/87Church_CompiledDataset_Fin.csv', 
                          fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Here load in Zierden SGs 
@@ -647,7 +647,7 @@ wareByUnit_Phase<- left_join (wareTypeDataA, unitPhaseb, by = 'CONTEXT') %>%
   mutate(Phase = ifelse(is.na(Phase),'',Phase))
 
 ###Save this data as a CSV
-write.csv(wareByUnit_Phase,"87Church_PhasedData.csv", row.names = FALSE)
+#write.csv(wareByUnit_Phase,"87Church_PhasedData.csv", row.names = FALSE)
 
 # Transpose the data for the MCD and CA 
 wareByPhaseT <- wareByUnit_Phase %>% group_by(WARE, Phase) %>% 
@@ -665,5 +665,5 @@ MCDByPhase<-EstimateMCD(dataForMCD_Phase$unitData,
 MCDByPhase
 
 # Exported this data for The Charleston Museum
-write.csv((MCDByPhase[["MCDs"]]),"87Church_MCDsByPhase.csv", row.names = FALSE)
+#write.csv((MCDByPhase[["MCDs"]]),"87Church_MCDsByPhase.csv", row.names = FALSE)
 

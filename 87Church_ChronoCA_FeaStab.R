@@ -1,4 +1,4 @@
-# 87Church_ChronoCA_AllData.R
+# 87Church_ChronoCA_FeaStab.R
 # Created by:  FDN  8.5.2014
 # This code in its original form was authored and developed by Dr. Fraser Neiman of
 # Monticello Archaeology and subsequently edited by Sarah Platt for use in
@@ -25,7 +25,7 @@ MCDTypeTable<- read.csv(file = "Dissertation_Chronology/DAACS_MCDTypeTable.csv",
 # data is stored in a series of CSV files in the github repository
 # for the project
 
-wareTypeDataA <- read.csv(file = 'Dissertation_Chronology/87Church_CompiledDatasetB.csv', 
+wareTypeDataA <- read.csv(file = 'Dissertation_FinalDataCSVs/87Church_CompiledDataset_Fin.csv', 
                           fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Here load in Zierden SGs 
@@ -284,9 +284,6 @@ MCDByUnit<-EstimateMCD(dataForMCD$unitData, dataForMCD$typeData)
 # let's see what it looks like
 MCDByUnit
 
-# Export this data for basic reference
-#write.csv((MCDByUnit[["MCDs"]]),"87Church_MCDS.TPQS.csv", row.names = FALSE)
-
 #### 10. Seriation diagram based on MCDs ####
 # First define a  function to sort the rows and cols of a matrix based on the
 # orders from two arguments (e.g. MCDs and midpoints)
@@ -424,7 +421,7 @@ p1 <- ggplot(rowScores, aes(x=Dim1,y=Dim2))+
   geom_point(shape=21, size=5, colour="black", fill="cornflower blue")+
   #geom_text(aes(label= unit,vjust=-.6, cex=5) +
   theme(plot.title = element_text(hjust = 0.5))+
-  geom_text_repel(aes(label= unit), cex = 4) +
+  #geom_text_repel(aes(label= unit), cex = 4) +
   labs(title="87 Church Street - Stable and Herold Features", 
        x = paste ("Dimension 1",":  ", round(inertia[1,]*100),'%', sep=''), 
        y= paste ("Dimension 2",":  ", round(inertia[2,]*100),'%', sep='')
@@ -560,21 +557,22 @@ p5a1 <- p5a + geom_vline(xintercept=c(-.7, -.1, .5), colour = "gray", linetype =
                          size=1)      
 p5a1
 
-p5b1 <- p5b + geom_vline(xintercept=c(1, 2, 2.5), colour = "gray", linetype = "dashed",
+p5b1 <- p5b + geom_vline(xintercept=c(-1, -2, -2.5), colour = "gray", linetype = "dashed",
                          size=1)      
 p5b1
 
 #### 15.  Do the Dim 1 -  MCD scatterplot with Phase assignments  ####
 # Do the Phase assigments, based on the Dim1 scores
 # Note, depending on how many phases you have you will need to add or comment out lines and update boundaries
-CA_MCD_Phase <- CA_MCD %>% mutate(Phase = case_when (((Dim1 >= 0.5) & (Dim2 <= 1)) ~ 'P01',
-                                                     (((Dim1 >= -0.1) &(Dim1 < 0.5)) & (Dim2 <= 1)) ~ 'P02', 
-                                                     (((Dim1 >= -0.7) &(Dim1 < -0.1)) & (Dim2 <= 1)) ~ 'P03',
-                                                     ((Dim1 < -0.7) & (Dim2 <= 2.5)) ~ 'P04',
-                                                     (((Dim2 > 1) &(Dim2 <= 2.5)) & (Dim1 >= 0.5)) ~ 'P01B',
-                                                     (((Dim2 > 1) &(Dim2 <= 2.5)) & ((Dim1 < 0.5) & (Dim1 >=-0.1))) ~ 'P02B',
-                                                     (((Dim2 > 1) &(Dim2 <= 2.5)) & ((Dim1 < -0.1) & (Dim1 >=-0.7))) ~ 'P03B',
-                                                     Dim2 > 2.5 ~ 'P05'
+
+CA_MCD_Phase <- CA_MCD %>% mutate(Phase = case_when (((Dim1 >= 0.5) & (-1 <= Dim2)) ~ 'P01',
+                                                     (((Dim1 >= -0.1) &(Dim1 < 0.5)) & (Dim2 >= -1)) ~ 'P02', 
+                                                     (((Dim1 >= -0.7) &(Dim1 < -0.1)) & (Dim2 >= -1)) ~ 'P03',
+                                                     ((Dim1 < -0.7) & (Dim2 >= -2.5)) ~ 'P04',
+                                                     (((Dim2 < -1) &(Dim2 >= -2.5)) & (Dim1 >= 0.5)) ~ 'P01B',
+                                                     (((Dim2 < -1) &(Dim2 >= -2.5)) & ((Dim1 < 0.5) & (Dim1 >=-0.1))) ~ 'P02B',
+                                                     (((Dim2 < -1) &(Dim2 >= -2.5)) & ((Dim1 < -0.1) & (Dim1 >=-0.7))) ~ 'P03B',
+                                                     Dim2 < -2.5 ~ 'P05'
 ))
 
 # BlueMCD By Dim1 plot by Phase
@@ -600,7 +598,7 @@ p6z <- ggplot(CA_MCD_Phase,aes(x = Dim1, y = Dim2,
   geom_point(shape=21,  alpha = .75, size= 6)  + 
   scale_fill_brewer(name="DAACS Phase",
                     palette = 'Set1') + 
-  geom_text_repel(aes(label= unit), cex=4) +
+  #geom_text_repel(aes(label= unit), cex=4) +
   theme(plot.title = element_text(hjust = 0.5))+
   labs(title="87 Church Street - Stable and Herold Features", x="Dimension 1", y="Dimension 2")
 p6z
@@ -616,7 +614,7 @@ wareByUnit_Phase<- left_join (wareTypeDataA, unitPhaseb, by = 'CONTEXT') %>%
   mutate(Phase = ifelse(is.na(Phase),'',Phase))
 
 ###Save this data as a CSV
-write.csv(wareByUnit_Phase,"Dissertation_Chronology/FeaStab_PhasedData.csv", row.names = FALSE)
+#write.csv(wareByUnit_Phase,"Dissertation_Chronology/FeaStab_PhasedData.csv", row.names = FALSE)
 
 
 # Transpose the data for the MCD and CA 
@@ -634,4 +632,5 @@ MCDByPhase<-EstimateMCD(dataForMCD_Phase$unitData,
 # let's see what it looks like
 MCDByPhase
 
+### Save this data as a CSV
 write.csv((MCDByPhase[["MCDs"]]),"Dissertation_Chronology/FeaStab_PhasesMCD.csv", row.names = FALSE)
