@@ -1210,5 +1210,8 @@ write.csv(FINALCompiledB,"87Church_CompiledDataset.csv", row.names = TRUE)
 # Please note, a series of transformations occurred outside of R due to ease
 # and available time. These include the updating of a number of DAACS artifact
 # IDs to reflect the addition of the ware type Slip-Coated. There are also two 
-# artifact records (ARL 504353.1 and .2 ) I updated to UNPROV by 
-# hand due to available time
+# artifact records (ARL 50453.1 and .2 ) I updated to UNPROV by 
+# hand due to available time. One critical addition is the vertical provenience 
+# information for F26 Staffordshire slipware ARL 22603.2 through .13. This data was added 
+# after the fact and was done by hand in the excel spreadsheet. These changes
+# are reflected in the "87Church_CompiledDatasetB.csv" file. 
