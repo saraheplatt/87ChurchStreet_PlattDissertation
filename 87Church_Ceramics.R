@@ -29,7 +29,7 @@ diss_colors <- c(
 
 # Load in final dataset
 
-wareTypeDataA <- read.csv(file = '87Church_PhasedData.csv', 
+wareTypeDataA <- read.csv(file = 'Dissertation_FinalDataCSVs/87Church_PhasedData.csv', 
                           fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Create CSV with all ware types for material type assignments
@@ -40,10 +40,6 @@ Wares <- wareTypeDataA %>%
   group_by(WARE, CEW) %>% 
   summarise(Count = sum(COUNT))
 
-#Create CSV
-
-write.csv(Wares,
-          "DAACSWARES.csv", row.names = FALSE)
 
 #Read in CSV
 
@@ -69,7 +65,7 @@ f26Totals <- wareTypeDataC %>%
 #### Calculate Relative Frequencies 
 
 #Transpose the data set
-f26FINALFREQDATASETA <- Feature26Totals %>% group_by(LEVEL,MATERIAL) %>%
+f26FINALFREQDATASETA <- f26Totals %>% group_by(LEVEL,MATERIAL) %>%
   summarise(Count=sum(Count)) %>%
   spread(MATERIAL,
          value=Count ,
@@ -97,8 +93,8 @@ f26RelativeFreqs <-f26FINALFREQDATASETAZ %>% mutate(ChinesePorcelainRF=ChinesePo
                                               ColonowareRF=Colonoware/sumrow)
 #Create CSV to generate table for chapter
 
-write.csv(f26RelativeFreqs,
-          "Fea26RelativeFrequencies.csv", row.names = FALSE)
+#write.csv(f26RelativeFreqs,
+          #"Fea26RelativeFrequencies.csv", row.names = FALSE)
 
 #### Levels and Feature Plots ####
 
@@ -117,10 +113,7 @@ wareTypeData87CIIIa2 <- subset(wareTypeData87CIIIa, (LEVEL == 'L07')|
                                  (LEVEL == 'L13')|
                                  (LEVEL == 'L14')|
                                  (LEVEL == 'L15')|
-                                 (LEVEL == 'L16')|
-                                 (is.na(LEVEL)))
-
-### NOTE SEP - ADDED THE NA LEVEL DATA MAY WANT TO TAKE OUT!!!
+                                 (LEVEL == 'L16'))
 
 wareTypeData87CIIIa3 <- wareTypeData87CIIIa2 %>% 
   group_by(WARE, FEATURE, MATERIAL) %>% 
@@ -208,11 +201,6 @@ MilWareRelFreqA <- MilTotalsWare %>% group_by(Context, WARE) %>%
   spread(WARE,
          value=Count ,
          fill=0 )
-
-#Read out CSV to get column names
-
-#write.csv(MilWareRelFreqA,
-          #"ColumnNamesWorksheet.csv", row.names = FALSE)
 
 #Calculate sums of ware types
 MilWareRelFreqB <- MilWareRelFreqA %>% mutate(sumrow= `Agate, refined (Whieldon-type)` + 
@@ -302,8 +290,8 @@ MilWareRelativeFreqFIN <- MilWareRelFreqB %>% mutate(AgateRF=`Agate, refined (Wh
                                                     )
 #Create CSV to generate table for chapter
 
-#write.csv(MilWareRelativeFreqFIN,
-        #  "MilWareRelativeFrequencies.csv", row.names = FALSE)
+write.csv(MilWareRelativeFreqFIN,
+          "MilWareRelativeFrequencies.csv", row.names = FALSE)
 
 
 #### Relative Frequencies of material ####
