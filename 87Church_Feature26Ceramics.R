@@ -21,11 +21,11 @@ diss_colors <- c(
   "#004E1C",
   "#56B942",
   "#2AA9C2",
-  "#C5F2F7",
+  "#A6CDD1",
   "#7C0405",
   "#C02614",
   "#E87F19",
-  "#F9EB04")
+  "#D8CD02")
 
 # Load in final dataset
 
@@ -273,7 +273,7 @@ Feat26RelativeFreqPlotB <- Feat26RelativeFreqPlotA[c('LEVEL',
 Feat26RelativeFreqPlotC <- as.data.frame(Feat26RelativeFreqPlotB)
 
 #Reshape
-Feat26RelativeFreqPlot <- reshape(Feat26RelativeFreqPlotC, 
+Feat26RelativeFreqPlotA <- reshape(Feat26RelativeFreqPlotC, 
                                    varying = c('Porcelain', 'Late Porcelain', "REW Early 18th",
                                                "REW Late 18th", "REW 19th", 'CEW',
                                                "CEW Common Table", "Stoneware",
@@ -287,6 +287,11 @@ Feat26RelativeFreqPlot <- reshape(Feat26RelativeFreqPlotC,
                                    new.row.names = 1:1000,
                                    direction = "long")
 
+#Eliminate UNPROV data for plot
+
+Feat26RelativeFreqPlot <- subset(Feat26RelativeFreqPlotA,
+                                 LEVEL != "UNPROV")
+
 ####Barplot!
 library(RColorBrewer)
 ggplot(data=Feat26RelativeFreqPlot, aes(x=LEVEL, y=RelativeFreq, fill=Ware)) +
@@ -296,11 +301,11 @@ ggplot(data=Feat26RelativeFreqPlot, aes(x=LEVEL, y=RelativeFreq, fill=Ware)) +
     "#004E1C",
     "#56B942",
     "#2AA9C2",
-    "#C5F2F7",
+    "#A6CDD1",
     "#7C0405",
     "#C02614",
     "#E87F19",
-    "#F9EB04")) +
+    "#D8CD02")) +
   theme(
     axis.title.x = element_text(size = 14),
     axis.title.y = element_text(size = 14),
@@ -511,7 +516,14 @@ Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("Stoneware Common Tabl
                                                                 SlipDipRF +
                                                                 WhiteSaltGlazedRF)
 
-#Subset to just needed columns
+###Transpose data for table and pull csv
+
+Feat26OccRelFreqPlotA2<-as.data.frame(t(Feat26OccRelFreqPlotA))
+
+write.csv(Feat26OccRelFreqPlotA2,
+          "Fea26RelativeFreqbyOcc.csv", row.names = FALSE)
+ 
+#Subset to just needed columns for plot
 
 Feat26OccRelFreqPlotB <- Feat26OccRelFreqPlotA[c('Occupation', 
                                                      'Porcelain', 'Late Porcelain', "REW Early 18th",
@@ -550,11 +562,11 @@ ggplot(data=Feat26OccRelFreqPlot, aes(x=Occupation, y=RelativeFreq, fill=Ware)) 
     "#004E1C",
     "#56B942",
     "#2AA9C2",
-    "#C5F2F7",
+    "#A6CDD1",
     "#7C0405",
     "#C02614",
     "#E87F19",
-    "#F9EB04")) +
+    "#D8CD02")) +
   theme(
     axis.title.x = element_text(size = 14),
     axis.title.y = element_text(size = 14),
@@ -564,7 +576,7 @@ ggplot(data=Feat26OccRelFreqPlot, aes(x=Occupation, y=RelativeFreq, fill=Ware)) 
                                size=14)) +
   ylab("Relative Frequency") +
   xlab("Occupation") +
-  ggtitle("87 Church Street - Feature 26 Ceramics")
+  ggtitle("87 Church Street - Feature 26 Ceramics by Occupation")
 
 
 
