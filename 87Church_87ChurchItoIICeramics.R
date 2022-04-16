@@ -437,39 +437,40 @@ ggplot(data=Mil87ChurchRFPlotD, aes(x=Context, y=RelativeFreq, fill=Ware)) +
 
 # Compile dataset based on occupation categories
 
-Feat26OccRelFreqA <- within(Feat26RelativeFreqDataC, LEVEL[LEVEL == 'L01' | 
-                                                             LEVEL == 'L02' |
-                                                             LEVEL == 'L03' ] <- "IVtoV")
+MilOccRelFreqA <- within(wareTypeData87CMil, Context[Context == 'F065Early' | 
+                                                             Context == 'L08' |
+                                                             Context == 'F166' ] <- "ItoII")
 
-Feat26OccRelFreqA <- within(Feat26OccRelFreqA, LEVEL[LEVEL == 'L04' | 
-                                                       LEVEL == 'L05' ] <- "IIItoV")
+MilOccRelFreqB <- within(MilOccRelFreqA, Context[Context == 'L07' | 
+                                                   Context == 'L06' |
+                                                   Context == 'L05' |
+                                                   Context == 'L04'] <- "II")
 
-Feat26OccRelFreqA <- within(Feat26OccRelFreqA, LEVEL[LEVEL == 'L06' | 
-                                                       LEVEL == 'L07' |
-                                                       LEVEL == 'L08' |
-                                                       LEVEL == 'L09' |
-                                                       LEVEL == 'L10' |
-                                                       LEVEL == 'L11' |
-                                                       LEVEL == 'L12' |
-                                                       LEVEL == 'L13' |
-                                                       LEVEL == 'L14' |
-                                                       LEVEL == 'L15' |
-                                                       LEVEL == 'L16' ] <- "III")
+MilOccRelFreqC <- within(MilOccRelFreqB, Context[
+                                                       Context == 'L03B' |
+                                                       Context == 'F026' |
+                                                       Context == 'F065Late' 
+                                                       ] <- "III")
+
+MilOccRelFreqD <- within(MilOccRelFreqC, Context[Context == 'L03A' |
+                                                   Context == 'L03' 
+                                                    ] <- "IIItoV")
+
 
 #Summarize
 
-Feat26OccRelFreqB <- Feat26OccRelFreqA %>% 
-  group_by(LEVEL, WARE) %>% 
-  summarise(Count = sum(Count))
+MilOccRelFreqE  <- MilOccRelFreqD  %>% 
+  group_by(Context, WARE) %>%
+  summarise(Count=sum(Count))
 
 #Rename LEVEL to Occupation
-Feat26OccRelFreqC <- Feat26OccRelFreqB %>% 
+MilOccRelFreqF <- MilOccRelFreqE %>% 
   rename(
-    Occupation = LEVEL
+    Occupation = Context
   )
 
 #Transpose the data set
-Feat26OccRelFreqD <- Feat26OccRelFreqC %>% group_by(Occupation, WARE) %>%
+MilOccRelFreqG <- MilOccRelFreqF %>% group_by(Occupation, WARE) %>%
   summarise(Count=sum(Count)) %>%
   spread(WARE,
          value=Count ,
@@ -478,93 +479,114 @@ Feat26OccRelFreqD <- Feat26OccRelFreqC %>% group_by(Occupation, WARE) %>%
 #Combine British brown and Frechen into "Brown Stoneware" 
 #and Saintonge and French Coarse Earthenware into "French CEW"
 
-Feat26OccRelFreqE <- Feat26OccRelFreqD %>% mutate(BrownStoneware = 
+MilOccRelFreqH <- MilOccRelFreqG %>% mutate(BrownStoneware = 
                                                     `British Brown/Fulham Type` +
                                                     `Frechen Brown`)
 
-Feat26OccRelFreqF <- Feat26OccRelFreqE %>% mutate(`French CEW` = 
+MilOccRelFreqI <- MilOccRelFreqH %>% mutate(`French CEW` = 
                                                     `Saintonge` +
                                                     `French Coarse Earthenware`)
 
-Feat26OccRelFreqF$`British Brown/Fulham Type` <- NULL
-Feat26OccRelFreqF$`Frechen Brown` <- NULL
+MilOccRelFreqI$`British Brown/Fulham Type` <- NULL
+MilOccRelFreqI$`Frechen Brown` <- NULL
 
-Feat26OccRelFreqF$`French Coarse Earthenware` <- NULL
-Feat26OccRelFreqF$`Saintonge` <- NULL
+MilOccRelFreqI$`French Coarse Earthenware` <- NULL
+MilOccRelFreqI$`Saintonge` <- NULL
 
 #Calculate sums of ware types
-Feat26OccRelFreqG <- Feat26OccRelFreqF %>% mutate(sumrow= `Agate, refined (Whieldon-type)` +
-                                                    `Astbury Type` + 
-                                                    BrownStoneware +
-                                                    `Buckley-type` +
-                                                    `Coarse Earthenware, unidentified` +
-                                                    `Colonoware` +
-                                                    `Creamware` +
-                                                    `Delftware, Dutch/British` +
-                                                    `French CEW` +
-                                                    `Hohr ware` +
-                                                    `Jackfield Type` +
-                                                    `Native American` +
-                                                    `North Devon Gravel Tempered` +
-                                                    `North Devon Slipware` +
-                                                    `Nottingham` + 
-                                                    `Pearlware` +
-                                                    `Porcelain, Chinese` +
-                                                    `Porcellaneous/Hard Paste` +
-                                                    `Slip Dip` +
-                                                    `Slip-Coated` +
-                                                    `Slipware, North Midlands/Staffordshire` +
-                                                    `Spanish Coarse Earthenware` +
-                                                    `Staffordshire Mottled Glaze` +
-                                                    `Stoneware, unidentifiable` +
-                                                    `Unidentifiable` +
-                                                    `Westerwald/Rhenish` +
-                                                    `Whieldon-type Ware` +
-                                                    `White Salt Glaze` +
-                                                    `Whiteware` 
+MilOccRelFreqJ <- MilOccRelFreqI %>% mutate(sumrow= `Agate, refined (Whieldon-type)` + 
+                                                        `American Stoneware` +
+                                                        `Astbury Type` + 
+                                                        `Bennington/Rockingham` +
+                                                        `Black Basalt` +
+                                                        `BrownStoneware` +
+                                                        `Buckley-type` +
+                                                        `Caribbean Coarse Earthenware` +
+                                                        `Coarse Earthenware, unidentified` +
+                                                        `Colonoware` +
+                                                        `Creamware` +
+                                                        `Delftware, Dutch/British` +
+                                                        `French CEW` +
+                                                        `Hohr ware` +
+                                                        `Jackfield Type` +
+                                                        `Majolica` +
+                                                        `Native American` +
+                                                        `North Devon Gravel Tempered` +
+                                                        `North Devon Slipware` +
+                                                        `Nottingham` + 
+                                                        `Pearlware` +
+                                                        `Porcelain, Chinese` +
+                                                        `Porcelain, unidentified` +
+                                                        `Porcellaneous/Hard Paste` +
+                                                        `Post-Medieval London-area Redware` +
+                                                        `Rosso Antico` +
+                                                        `Slip Dip` +
+                                                        `Slip-Coated` +
+                                                        `Slipware, North Midlands/Staffordshire` +
+                                                        `Spanish Coarse Earthenware` +
+                                                        `Staffordshire Mottled Glaze` +
+                                                        `Stoneware, unidentifiable` +
+                                                        `Unidentifiable` +
+                                                        `Westerwald/Rhenish` +
+                                                        `Whieldon-type Ware` +
+                                                        `White Salt Glaze` +
+                                                        `Whiteware` +
+                                                        `Yellow Ware`
 )
 
 ###Calculate relative frequencies 
-
-Feat26OccRelFreqH <- Feat26OccRelFreqG %>% mutate(AgateRF=`Agate, refined (Whieldon-type)`/sumrow,
-                                                  AstburyRF=`Astbury Type`/sumrow,
-                                                  BrownStonewareRF=BrownStoneware/sumrow,
-                                                  BuckleyRF=`Buckley-type`/sumrow,
-                                                  CEWunidRF=`Coarse Earthenware, unidentified`/sumrow,
-                                                  ColonowareRF=`Colonoware`/sumrow,
-                                                  CreamwareRF=`Creamware`/sumrow,
-                                                  DelftRF=`Delftware, Dutch/British`/sumrow,
-                                                  FrenchCEWRF=`French CEW`/sumrow,
-                                                  HohrRF=`Hohr ware`/sumrow,
-                                                  JackfieldRF=`Jackfield Type`/sumrow,
-                                                  MangMottRF=`Staffordshire Mottled Glaze`/sumrow,
-                                                  NativeAmericanRF=`Native American`/sumrow,
-                                                  NorthDevonGTRF=`North Devon Gravel Tempered`/sumrow,
-                                                  NorthDevonSlipRF=`North Devon Slipware`/sumrow,
-                                                  NottinghamRF=`Nottingham`/sumrow,
-                                                  PearlwareRF=`Pearlware`/sumrow,
-                                                  ChinesePorcelainRF=`Porcelain, Chinese`/sumrow,
-                                                  PorcellaneousRF=`Porcellaneous/Hard Paste`/sumrow,
-                                                  SlipDipRF=`Slip Dip`/sumrow,
-                                                  SlipCoatedRF=`Slip-Coated`/sumrow,
-                                                  SpanishCEWRF=`Spanish Coarse Earthenware`/sumrow,
-                                                  StaffSlipRF=`Slipware, North Midlands/Staffordshire`/sumrow,
-                                                  StonewareUnidRF=`Stoneware, unidentifiable`/sumrow,
-                                                  UnidRF=`Unidentifiable`/sumrow,
-                                                  WesterwaldRF=`Westerwald/Rhenish`/sumrow,
-                                                  WhieldonRF=`Whieldon-type Ware`/sumrow,
-                                                  WhiteSaltGlazedRF=`White Salt Glaze`/sumrow,
-                                                  WhitewareRF=`Whiteware`/sumrow
+MilOccRelFreqK <- MilOccRelFreqJ %>% mutate(AgateRF=`Agate, refined (Whieldon-type)`/sumrow,
+                                                      AmericanStonewareRF=`American Stoneware`/sumrow,
+                                                      AstburyRF=`Astbury Type`/sumrow,
+                                                      RockinghamRF=`Bennington/Rockingham`/sumrow,
+                                                      BlackBasaltRF=`Black Basalt`/sumrow,
+                                                      CaribCEWRF=`Caribbean Coarse Earthenware`/sumrow,
+                                                      BuckleyRF=`Buckley-type`/sumrow,
+                                                      BrownStonewareRF=`BrownStoneware`/sumrow,
+                                                      CEWunidRF=`Coarse Earthenware, unidentified`/sumrow,
+                                                      ColonowareRF=`Colonoware`/sumrow,
+                                                      CreamwareRF=`Creamware`/sumrow,
+                                                      DelftRF=`Delftware, Dutch/British`/sumrow,
+                                                      FrenchCEWRF=`French CEW`/sumrow,
+                                                      HohrRF=`Hohr ware`/sumrow,
+                                                      JackfieldRF=`Jackfield Type`/sumrow,
+                                                      MajolicaRF=`Majolica`/sumrow,
+                                                      NativeAmericanRF=`Native American`/sumrow,
+                                                      NorthDevonGTRF=`North Devon Gravel Tempered`/sumrow,
+                                                      NorthDevonSlipRF=`North Devon Slipware`/sumrow,
+                                                      NottinghamRF=`Nottingham`/sumrow,
+                                                      PearlwareRF=`Pearlware`/sumrow,
+                                                      ChinesePorcelainRF=`Porcelain, Chinese`/sumrow,
+                                                      PorcelainUnidRF=`Porcelain, unidentified`/sumrow,
+                                                      PorcellaneousRF=`Porcellaneous/Hard Paste`/sumrow,
+                                                      PMLRedRF=`Post-Medieval London-area Redware`/sumrow,
+                                                      RossoAnticoRF=`Rosso Antico`/sumrow,
+                                                      SlipDipRF=`Slip Dip`/sumrow,
+                                                      SlipCoatedRF=`Slip-Coated`/sumrow,
+                                                      StaffSlipRF=`Slipware, North Midlands/Staffordshire`/sumrow,
+                                                      StonewareUnidRF=`Stoneware, unidentifiable`/sumrow,
+                                                      UnidRF=`Unidentifiable`/sumrow,
+                                                      WesterwaldRF=`Westerwald/Rhenish`/sumrow,
+                                                      WhieldonRF=`Whieldon-type Ware`/sumrow,
+                                                      WhiteSaltGlazedRF=`White Salt Glaze`/sumrow,
+                                                      WhitewareRF=`Whiteware`/sumrow,
+                                                      YellowWareRF=`Yellow Ware`/sumrow,
+                                                      MangMottRF=`Staffordshire Mottled Glaze`/sumrow,
+                                                      SpanishCEWRF=`Spanish Coarse Earthenware`/sumrow,
 )
 
-#Strip down to just relative Frequencies
+#Strip down to just relative frequencies 
 
-Feat26OccRelFreqI <- Feat26OccRelFreqH %>% 
+MilOccRelFreqL <- MilOccRelFreqK %>% 
   select(sumrow, 
          AgateRF,
+         AmericanStonewareRF,
          AstburyRF,
-         BrownStonewareRF,
+         RockinghamRF,
+         BlackBasaltRF,
+         CaribCEWRF,
          BuckleyRF,
+         BrownStonewareRF,
          CEWunidRF,
          ColonowareRF,
          CreamwareRF,
@@ -572,106 +594,136 @@ Feat26OccRelFreqI <- Feat26OccRelFreqH %>%
          FrenchCEWRF,
          HohrRF,
          JackfieldRF,
-         MangMottRF,
+         MajolicaRF,
          NativeAmericanRF,
          NorthDevonGTRF,
          NorthDevonSlipRF,
          NottinghamRF,
          PearlwareRF,
          ChinesePorcelainRF,
+         PorcelainUnidRF,
          PorcellaneousRF,
+         PMLRedRF,
+         RossoAnticoRF,
          SlipDipRF,
          SlipCoatedRF,
-         SpanishCEWRF,
          StaffSlipRF,
          StonewareUnidRF,
          UnidRF,
          WesterwaldRF,
          WhieldonRF,
          WhiteSaltGlazedRF,
-         WhitewareRF
+         WhitewareRF,
+         YellowWareRF,
+         MangMottRF,
+         SpanishCEWRF
   )
+
+#Swap rows and columns
+
+MilOccRelFreqM<-as.data.frame(t(MilOccRelFreqL))
+
+#Convert row names into a column
+
+MilOccRelFreqO <- cbind(rownames(MilOccRelFreqM), 
+                             data.frame(MilOccRelFreqM, row.names=NULL))
+
+#Swap rows and columns on earlier dataset for sums of ware types
+
+#Feat26RelativeFreqDataSumsa<-as.data.frame(t(Feat26RelativeFreqDataG))
+
+#Convert row names into a column
+
+#Feat26RelativeFreqDataSums <- cbind(rownames(Feat26RelativeFreqDataSumsa), 
+# data.frame(Feat26RelativeFreqDataSumsa, row.names=NULL))
+
+#Export 2 CSVs, one final relative frequencies and one with the ware type sums
+
+#Make a csv for tables
+#write.csv(wareTypeData87CMilH,
+          #"87CItoIIIRelativeFreqDataCeramics.csv", row.names = FALSE)
+
+#write.csv(Feat26RelativeFreqDataSums,
+# "Feat26RelativeFreqDataSums.csv", row.names = FALSE)
+
+#Outside of R, these two datasets will be combined into a single table.
 
 ### Compile results into new columns (analytical material types) for plot
 
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqI %>% mutate(Porcelain = 
-                                                        ChinesePorcelainRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("Late Porcelain" = 
-                                                            PorcellaneousRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("REW Early 18th" = 
-                                                            DelftRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("REW Late 18th" = 
-                                                            AgateRF +
-                                                            AstburyRF +
-                                                            CreamwareRF +
-                                                            JackfieldRF +
-                                                            WhieldonRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("REW 19th" = 
-                                                            PearlwareRF +
-                                                            WhitewareRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("CEW" = 
-                                                            BuckleyRF +
-                                                            CEWunidRF + 
-                                                            ColonowareRF +
-                                                            FrenchCEWRF +
-                                                            NativeAmericanRF +
-                                                            NorthDevonGTRF +
-                                                            SpanishCEWRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("CEW Common Table" = 
-                                                            MangMottRF +
-                                                            NorthDevonSlipRF + 
-                                                            SlipCoatedRF +
-                                                            StaffSlipRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("Stoneware" = 
-                                                            BrownStonewareRF +
-                                                            StonewareUnidRF)
-Feat26OccRelFreqPlotA <- Feat26OccRelFreqPlotA %>% mutate("Stoneware Common Table" = 
-                                                            HohrRF +
-                                                            WesterwaldRF + 
-                                                            NottinghamRF +
-                                                            SlipDipRF +
-                                                            WhiteSaltGlazedRF)
+MilOccRelFreqM <- MilOccRelFreqL %>% mutate(Porcelain = 
+                                                       ChinesePorcelainRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("Late Porcelain" = 
+                                                      PorcellaneousRF +
+                                                      PorcelainUnidRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("REW Early 18th" = 
+                                                      DelftRF +
+                                                      MajolicaRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("REW Late 18th" = 
+                                                      AgateRF +
+                                                      AstburyRF +
+                                                      CreamwareRF +
+                                                      JackfieldRF +
+                                                      WhieldonRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("REW 19th" = 
+                                                      PearlwareRF +
+                                                      WhitewareRF +
+                                                      RockinghamRF +
+                                                      YellowWareRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("CEW" = 
+                                                      BuckleyRF +
+                                                      CEWunidRF + 
+                                                      ColonowareRF +
+                                                      FrenchCEWRF +
+                                                      NativeAmericanRF +
+                                                      NorthDevonGTRF +
+                                                      SpanishCEWRF +
+                                                      CaribCEWRF +
+                                                      PMLRedRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("CEW Common Table" = 
+                                                      MangMottRF +
+                                                      NorthDevonSlipRF + 
+                                                      SlipCoatedRF +
+                                                      StaffSlipRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("Stoneware" = 
+                                                      BrownStonewareRF +
+                                                      StonewareUnidRF +
+                                                      AmericanStonewareRF)
+MilOccRelFreqM <- MilOccRelFreqM %>% mutate("Stoneware Common Table" = 
+                                                      HohrRF +
+                                                      WesterwaldRF + 
+                                                      NottinghamRF +
+                                                      SlipDipRF +
+                                                      WhiteSaltGlazedRF +
+                                                      RossoAnticoRF)
 
-###Transpose data for table and pull csv
+#Subset to just needed columns
 
-Feat26OccRelFreqPlotA2<-as.data.frame(t(Feat26OccRelFreqPlotA))
-
-write.csv(Feat26OccRelFreqPlotA2,
-          "Fea26RelativeFreqbyOcc.csv", row.names = FALSE)
-
-#Subset to just needed columns for plot
-
-Feat26OccRelFreqPlotB <- Feat26OccRelFreqPlotA[c('Occupation', 
-                                                 'Porcelain', 'Late Porcelain', "REW Early 18th",
-                                                 "REW Late 18th", "REW 19th", 'CEW',
-                                                 "CEW Common Table", "Stoneware",
-                                                 "Stoneware Common Table")]
-
-#Remove Unprov
-Feat26OccRelFreqPlotB2 <- Feat26OccRelFreqPlotB[-c(4),]
+MilOccRelFreqN <- MilOccRelFreqM[c('Occupation', 
+                                           'Porcelain', 'Late Porcelain', "REW Early 18th",
+                                           "REW Late 18th", "REW 19th", 'CEW',
+                                           "CEW Common Table", "Stoneware",
+                                           "Stoneware Common Table")]
 
 #Turn tibble into dataframe
-Feat26OccRelFreqPlotC <- as.data.frame(Feat26OccRelFreqPlotB2)
+MilOccRelFreqO <- as.data.frame(MilOccRelFreqN)
 
 #Reshape
-Feat26OccRelFreqPlot <- reshape(Feat26OccRelFreqPlotC, 
-                                varying = c('Porcelain', 'Late Porcelain', "REW Early 18th",
-                                            "REW Late 18th", "REW 19th", 'CEW',
-                                            "CEW Common Table", "Stoneware",
-                                            "Stoneware Common Table"), 
-                                v.names = "RelativeFreq",
-                                timevar = "Ware", 
-                                times = c('Porcelain', 'Late Porcelain', "REW Early 18th",
+MilOccRelFreqP <- reshape(MilOccRelFreqO, 
+                              varying = c('Porcelain', 'Late Porcelain', "REW Early 18th",
                                           "REW Late 18th", "REW 19th", 'CEW',
                                           "CEW Common Table", "Stoneware",
                                           "Stoneware Common Table"), 
-                                new.row.names = 1:1000,
-                                direction = "long")
+                              v.names = "RelativeFreq",
+                              timevar = "Ware", 
+                              times = c('Porcelain', 'Late Porcelain', "REW Early 18th",
+                                        "REW Late 18th", "REW 19th", 'CEW',
+                                        "CEW Common Table", "Stoneware",
+                                        "Stoneware Common Table"), 
+                              new.row.names = 1:1000,
+                              direction = "long")
 
-#
 ####Barplot!
-library(RColorBrewer)
-ggplot(data=Feat26OccRelFreqPlot, aes(x=Occupation, y=RelativeFreq, fill=Ware)) +
+ggplot(data=MilOccRelFreqP, aes(x=Occupation, y=RelativeFreq, fill=Ware)) +
   geom_bar(stat="identity", position="dodge") +
   scale_fill_manual(values=c(
     "#06263D",
@@ -692,8 +744,5 @@ ggplot(data=Feat26OccRelFreqPlot, aes(x=Occupation, y=RelativeFreq, fill=Ware)) 
                                size=14)) +
   ylab("Relative Frequency") +
   xlab("Occupation") +
-  ggtitle("87 Church Street - Feature 26 Ceramics by Occupation")
-
-
-
-
+  ggtitle("87 Church Street - Occupations I through III Ceramics") +
+  scale_x_discrete(limits = c("ItoII", "II", "III", "IIItoV"))
