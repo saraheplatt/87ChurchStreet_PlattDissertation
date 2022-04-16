@@ -10,9 +10,6 @@ library(ggplot2)
 library(viridis)
 library(data.table)
 
-#Theme set for ggplot
-
-theme_set(theme_classic())
 
 #Load dissertation palette
 
