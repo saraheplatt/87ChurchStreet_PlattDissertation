@@ -15,17 +15,31 @@ library (plotrix)
 library(ggplot2)
 library(viridis)
 
+#Load dissertation palette
+
+diss_colors <- c(
+  "#06263D",
+  "#004E1C",
+  "#56B942",
+  "#2AA9C2",
+  "#A6CDD1",
+  "#7C0405",
+  "#C02614",
+  "#E87F19",
+  "#D8CD02")
+
+
 #### 1. get the table with the ware type date ranges ####
 # get the table with the ware type date ranges, read in CSV
 MCDTypeTable<- read.csv(file = "Dissertation_Chronology/DAACS_MCDTypeTable.csv", 
                         fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
-#### 2. Load 87 Church Street Ware Date ####
+#### 2. Load 87 Church Street Ware Data ####
 # Note, this step is modified from original DAACS data. All of the diss
 # data is stored in a series of CSV files in the github repository
 # for the project
 
-wareTypeDataA <- read.csv(file = 'Dissertation_FinalDataCSVs/87Church_CompiledDataset_Fin.csv', 
+wareTypeDataA <- read.csv(file = 'Dissertation_FinalDataCSVs/A6_87Church_CompiledDataset_Fin.csv', 
                          fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Here load in Zierden SGs 
@@ -53,7 +67,7 @@ PhasedData <-  PhasedData %>%
 PhasedData <- PhasedData %>%
   select(CONTEXT, Phase)
 
-wareTypeData <- merge(PhasedData, wareTypeDataB, by=
+wareTypeData <- merge(PhasedData, wareTypeDataA, by=
                                     c("CONTEXT"))
 
 # Rename phase column to represent Stable Feature phases, not final phases
@@ -61,7 +75,7 @@ wareTypeData <- merge(PhasedData, wareTypeDataB, by=
 wareTypeData <- rename(wareTypeData, SFPhase = Phase)
 
 # do a summary
-summary1 <- wareTypeData %>%
+summary1 <- wareTypeDataA %>%
   group_by(CONTEXT,WARE) %>% 
   summarise(Count = sum(COUNT))
 options(tibble.print_min=100)
@@ -478,14 +492,14 @@ p1a <- ggplot(rowScoresCompB,aes(x = Dim1, y = Dim2,
   #scale_y_continuous(limits=c(1750, 1950)) +
   geom_point(shape=21,  alpha = .75, size= 6)  + 
   scale_fill_manual(values = c(
-                              "P01" = "red",
-                              "P01B" = "blue",
-                              "P02" = "green",
-                              "P02B" = "purple",
-                              "P03" = "orange",
-                              "P03B" = "yellow",
-                              "P04" = "brown",
-                              "P05" = "pink",
+                              "P01" = "#06263D",
+                              "P01B" = "#004E1C",
+                              "P02" = "#56B942",
+                              "P02B" = "#2AA9C2",
+                              "P03" = "#A6CDD1",
+                              "P03B" = "#7C0405",
+                              "P04" = "#C02614",
+                              "P05" = "#E87F19",
                               "NotAssign" = "NA")) +
   #geom_text_repel(aes(label= unit), cex=4) +
   theme(plot.title = element_text(hjust = 0.5))+
@@ -546,25 +560,6 @@ p5a <- ggplot(dim1ForHist, aes(x = dim1)) +
   geom_density(fill=NA)
 p5a
 
-# Here is the 2d density estimate
-dim1dim2forHist <- data.frame(dim1 = rep(CA_MCD$Dim1, CA_MCD$Count), 
-                              dim2 = rep(CA_MCD$Dim2, CA_MCD$Count))
-library(ggrepel)
-set.seed(42)
-p5c <- ggplot(dim1dim2forHist, aes(x=dim1,y=dim2))+
-  geom_point(shape=21, size=5, colour="black", fill="cornflower blue")+
-  # geom_text(aes(label= unit,vjust=-.6, cex=5) +
-  theme(plot.title = element_text(hjust = 0.5))+
-  #geom_text_repel(aes(label= unit), cex = 4) +
-  labs(title="87 Church Street - All Data", 
-       x = paste ("Dimension 1"), 
-       y= paste ("Dimension 2")
-  )
-p5c
-
-p5c + geom_density2d_filled(alpha = 0.5, binwidth=0.5) +
-  geom_density2d(size = 0.25, colour = "black")
-
 #Dim 2 Scores weighted histogram
 #### 14. Histogram of Dim 2 scores for Phasing ####
 # Dim 2 Scores Weighted Histogram, you may need to change scale
@@ -590,7 +585,7 @@ p5b1 <- p5b + geom_vline(xintercept=c(.2, 2.5), colour = "gray", linetype = "das
 p5b1
 
 #### 15.  Do the Dim 1 -  MCD scatterplot with Phase assignments  ####
-# Do the Phase assigments, based on the Dim1 scores
+# Do the Phase assignments, based on the Dim1 scores
 # Note, depending on how many phases you have you will need to add or comment out lines and update boundaries
 CA_MCD_PhaseB <- CA_MCD %>% mutate(Phase = case_when (((Dim1 >= 0.6) & (Dim2 <= 0.4)) ~ 'P01',
                                                      ((Dim1 >= 0.6) & (Dim2 > 0.4)) ~ 'P01b',
@@ -616,8 +611,17 @@ p6 <- ggplot(CA_MCD_Phase,aes(x = Dim1, y = blueMCD,
                               fill= Phase)) +
   #scale_y_continuous(limits=c(1750, 1950)) +
   geom_point(shape=21,  alpha = .75, size= 6)  +
-  scale_fill_brewer(name="DAACS Phase",
-                    palette = 'Set1') + 
+  scale_fill_manual(values=c(
+    "#06263D",
+    "#004E1C",
+    "#56B942",
+    "#2AA9C2",
+    "#A6CDD1",
+    "#7C0405",
+    "#C02614",
+    "#E87F19",
+    "#D8CD02",
+    "#00322E")) +
   #geom_text_repel(aes(label= unit), cex=4) +
   theme(plot.title = element_text(hjust = 0.5))+
   labs(title="87 Church Street - All Data", x="Dimension 1", y="BLUE MCD")
@@ -629,8 +633,17 @@ p6z <- ggplot(CA_MCD_Phase,aes(x = Dim1, y = Dim2,
                                fill= Phase)) +
   #scale_y_continuous(limits=c(1750, 1950)) +
   geom_point(shape=21,  alpha = .75, size= 6)  + 
-  scale_fill_brewer(name="DAACS Phase",
-                    palette = 'Set1') + 
+  scale_fill_manual(values=c(
+    "#06263D",
+    "#004E1C",
+    "#56B942",
+    "#2AA9C2",
+    "#A6CDD1",
+    "#7C0405",
+    "#C02614",
+    "#E87F19",
+    "#D8CD02",
+    "#00322E")) +
   #geom_text_repel(aes(label= unit), cex=4) +
   theme(plot.title = element_text(hjust = 0.5))+
   labs(title="87 Church Street - All Data", x="Dimension 1", y="Dimension 2")
@@ -664,6 +677,6 @@ MCDByPhase<-EstimateMCD(dataForMCD_Phase$unitData,
 # let's see what it looks like
 MCDByPhase
 
-# Exported this data for The Charleston Museum
-#write.csv((MCDByPhase[["MCDs"]]),"87Church_MCDsByPhase.csv", row.names = FALSE)
+  # Exported this data for The Charleston Museum
+  write.csv((MCDByPhase[["MCDs"]]),"87Church_MCDsByPhase.csv", row.names = FALSE)
 
