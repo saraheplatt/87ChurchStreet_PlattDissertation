@@ -23,3 +23,29 @@ This CSV is the result of file A1 R script, see code comments lines 1210 to 1217
 
 ### A6_87Church_CompiledDataset_Fin.csv
 This CSV is a modified version of file A5, see code comments in file 1 R script code comments line 1210 to 1217. 
+
+## Chronology and Correspondence Analysis
+
+Please note, the CA code (files B1 and B2) was developed based on a script initially developed and authored by Dr. Fraser Neiman, director of the Archaeology Department at Thomas Jefferson's Monticello at the time of the dissertation's writing. 
+
+### B1_87Church_ChronoCA_AllData.R
+This is the primary CA script, and relies on results from file B2 R script, ensure you follow all code comments closely.
+
+### B2_87Church_ChronoCA_FeaStab.R
+This is the secondary CA script based on the initial results of file 1, ensure you follow all code comments cloesly.
+
+### B3_DAACS_MCDTypeTable.csv
+A CSV of ware types and corresponding types as deployed by DAACS, this file is needed for the B1 and B2 R scripts. 
+
+### B4_87Church_ZierdenSGs.csv
+Equivalencies of DAACS designated contexts to the stratigraphic groups published in Zierden and Reitz's 2007 Heyward-Washington House site report.
+
+### B5_87Church_PhasedData.csv
+This csv is the result of the script B1 and B2, and is necessary for all future code scripts in the rest of the dissertation.
+
+### B6_87Church_MCDS.TPQS.csv
+This csv is the result of script B2, and is provided as a reference to future researchers.
+
+### A6_87Church_CompiledDataset_Fin.csv
+See above description, required to run scripts B1 and B2
+
