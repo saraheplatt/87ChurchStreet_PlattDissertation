@@ -24,7 +24,7 @@ This CSV is the result of file A1 R script, see code comments lines 1210 to 1217
 ### A6_87Church_CompiledDataset_Fin.csv
 This CSV is a modified version of file A5, see code comments in file 1 R script code comments line 1210 to 1217. 
 
-## Chronology and Correspondence Analysis
+## Chronology and Correspondence Analysis (B files)
 
 Please note, the CA code (files B1 and B2) was developed based on a script initially developed and authored by Dr. Fraser Neiman, director of the Archaeology Department at Thomas Jefferson's Monticello at the time of the dissertation's writing. 
 
@@ -48,4 +48,24 @@ This csv is the result of script B2, and is provided as a reference to future re
 
 ### A6_87Church_CompiledDataset_Fin.csv
 See above description, required to run scripts B1 and B2
+
+## Workyard Ceramics - Relative Frequencies (C files)
+
+### C1_87Church_87ChurchItoIICeramics.R
+This script produces barplots in chapter 4 and appendix 4, including relative frequencies of early occupational phases.
+
+### C2_87Church_Feature166Ceramics.R
+This script produces barplots in chapter 4 and appendix 4 pertinent to feature 166.
+
+### C3_87Church_Feature26Ceramics.R
+This script produces barplots in chapter 4 and appendix 4 pertinent to feature 26.
+
+### C4_87Church_Feature65Ceramics.R
+This script produces barplots in chapter 4 and appendix 4 pertinent to feature 65.
+
+### C5_DAACSWARES_Materials.R
+This file includes material type equivalencies to DAACS ware types.
+
+### B5_87Church_PhasedData.csv
+See above description, required to run all scripts in this section.
 
