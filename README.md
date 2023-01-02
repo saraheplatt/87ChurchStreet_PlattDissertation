@@ -69,3 +69,11 @@ This file includes material type equivalencies to DAACS ware types.
 ### B5_87Church_PhasedData.csv
 See above description, required to run all scripts in this section.
 
+## Reference files (D files)
+
+### D1_87Church_HeroldTobaccoPipes.csv
+A csv file with imbedded excel formulas for calculating Binford dates, based on compiled data from Elaine Herold on file at The Charleston Museum.
+
+### D2_87Church_HeroldSmallFinds.csv
+A digitized list of small finds, based on compiled data from Elaine Herold on file at The Charleston Museum.
+
