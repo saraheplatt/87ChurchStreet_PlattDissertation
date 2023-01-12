@@ -14,7 +14,7 @@ library(data.table)
 
 # Read in CSV of Past Perfect data
 
-InitialImportData<- read.csv(file = '87Church_Raw_PastPerfect_Feb2020_Final.csv', 
+InitialImportData<- read.csv(file = 'A2_87Church_Raw_PastPerfect_Feb2020_Final.csv', 
                              fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Eliminate all columns except for the variables I will be using in the dissertation
@@ -897,7 +897,7 @@ HeroldContextsFixed <- StreamlinedDataH6
 
 # Load in CSV of created DAACS/Charleston Museum equivalencies 
 
-WareEquivalencies<- read.csv(file = '87Church_DAACSWareEquivalencies.csv', 
+WareEquivalencies<- read.csv(file = 'A4_87Church_DAACSWareEquivalencies.csv', 
                              fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Unite the Ware Equivalencies with the cleaned Herold Data
@@ -932,7 +932,7 @@ FINALHeroldDataB <- FINALHeroldData %>%
 
 # Read in DAACS data 
 
-DAACSInitialImportData<- read.csv(file = '87Church_Raw_DAACSCeramics_Aug2021.csv', 
+DAACSInitialImportData<- read.csv(file = 'A3_87Church_Raw_DAACSCeramics_Aug2021.csv', 
                                   fileEncoding = 'UTF-8-BOM', stringsAsFactors = FALSE)
 
 # Strip down to just needed contexts
@@ -1024,7 +1024,7 @@ FINALCompiledB <- within(FINALCompiledB, BLOCK[UNIT %like% '^E'] <- 'D')
 FINALCompiledB$UNPROV <- NA
 
 FINALCompiledB <- within(FINALCompiledB, UNPROV[UNIT %ilike% 'UNPROV' | LEVEL %ilike% 
-                                                 'UNPROV'] <- 'yUNPROV')
+                                                  'UNPROV'] <- 'yUNPROV')
 
 #Flag individual contexts as unprov, these are all stable contexts that are 
 # out of context or are cleanup contexts as noted in Zierden's 2007
@@ -1074,112 +1074,112 @@ FINALchecksC <-  FINALCompiledB %>%
 # Add component designation to features where known
 
 FINALCompiledB <- within(FINALCompiledB, COMPONENT[FEATURE %like% 
-                                                    '^F021' | FEATURE %like%
-                                                  '^F026' | FEATURE %like%
-                                                  '^F027' | FEATURE %like%
-                                                  '^F028' | FEATURE %like%
-                                                  '^F030' | FEATURE %like%
-                                                  '^F031' | FEATURE %like%
-                                                  '^F032' | FEATURE %like%
-                                                  '^F033' | FEATURE %like%
-                                                  '^F034' | FEATURE %like%
-                                                  '^F035' | FEATURE %like%
-                                                  '^F036' | FEATURE %like%
-                                                  '^F037' | FEATURE %like%
-                                                  '^F038' | FEATURE %like%
-                                                  '^F041' | FEATURE %like%
-                                                  '^F042' | FEATURE %like%
-                                                  '^F043' | FEATURE %like%
-                                                  '^F044' | FEATURE %like%
-                                                  '^F045' | FEATURE %like%
-                                                    '^F047' | FEATURE %like%
-                                                    '^F048' | FEATURE %like%
-                                                    '^F049' | FEATURE %like%
-                                                    '^F051' | FEATURE %like%
-                                                    '^F053'| FEATURE %like%
-                                                    '^F055' | FEATURE %like%
-                                                    '^F056' | FEATURE %like%
-                                                    '^F057' | FEATURE %like%
-                                                    '^F058' | FEATURE %like%
-                                                    '^F060' | FEATURE %like%
-                                                    '^F061' | FEATURE %like%
-                                                    '^F063' | FEATURE %like%
-                                                    '^F064' | FEATURE %like%
-                                                    '^F065'| FEATURE %like%
-                                                    '^F067' | FEATURE %like%
-                                                    '^F072' | FEATURE %like%
-                                                    '^F073' | FEATURE %like%
-                                                    '^F074' | FEATURE %like%
-                                                    '^F075' | FEATURE %like%
-                                                    '^F076' | FEATURE %like%
-                                                    '^F077' | FEATURE %like%
-                                                    '^F078'| FEATURE %like%
-                                                    '^F079' | FEATURE %like%
-                                                    '^F089' | FEATURE %like%
-                                                    '^F090' | FEATURE %like%
-                                                    '^F091' | FEATURE %like%
-                                                    '^F093' | FEATURE %like%
-                                                    '^F094' | FEATURE %like%
-                                                    '^F098' | FEATURE %like%
-                                                    '^F099' | FEATURE %like%
-                                                    '^F100'| FEATURE %like%
-                                                    '^F101' | FEATURE %like%
-                                                    '^F102' | FEATURE %like%
-                                                    '^F103' | FEATURE %like%
-                                                    '^F104' | FEATURE %like%
-                                                    '^F110' | FEATURE %like%
-                                                    '^F111' | FEATURE %like%
-                                                    '^F112' | FEATURE %like%
-                                                    '^F119' | FEATURE %like%
-                                                    '^F123' | FEATURE %like%
-                                                    '^F124'| FEATURE %like%
-                                                    '^F125' | FEATURE %like%
-                                                    '^F127' | FEATURE %like%
-                                                    '^F128' | FEATURE %like%
-                                                    '^F129' | FEATURE %like%
-                                                    '^F132' | FEATURE %like%
-                                                    '^F133' | FEATURE %like%
-                                                    '^F136' | FEATURE %like%
-                                                    '^F137' | FEATURE %like%
-                                                    '^F139'| FEATURE %like%
-                                                    '^F140' | FEATURE %like%
-                                                    '^F142' | FEATURE %like%
-                                                    '^F143' | FEATURE %like%
-                                                    '^F144' | FEATURE %like%
-                                                    '^F145' | FEATURE %like%
-                                                    '^F148' | FEATURE %like%
-                                                    '^F150' | FEATURE %like%
-                                                    '^F154' | FEATURE %like%
-                                                    '^F157' | FEATURE %like%
-                                                    '^F159' | FEATURE %like%
-                                                    '^F161'| FEATURE %like%
-                                                    '^F163' | FEATURE %like%
-                                                    '^F164' | FEATURE %like%
-                                                    '^F165' | FEATURE %like%
-                                                    '^F166' | FEATURE %like%
-                                                    '^F168' | FEATURE %like%
-                                                    '^F170' | FEATURE %like%
-                                                    '^F171' | FEATURE %like%
-                                                    '^F172' | FEATURE %like%
-                                                    '^F173'| FEATURE %like%
-                                                    '^F176' | FEATURE %like%
-                                                    '^F179' | FEATURE %like%
-                                                    '^F180'| FEATURE %like%
-                                                    '^F181' | FEATURE %like%
-                                                    '^F183' | FEATURE %like%
-                                                    '^F184' | FEATURE %like%
-                                                    '^F185' | FEATURE %like%
-                                                    '^F188' | FEATURE %like%
-                                                    '^F190' | FEATURE %like%
-                                                    '^F191' | FEATURE %like%
-                                                    '^F192' | FEATURE %like%
-                                                    '^F193' | FEATURE %like%
-                                                    '^F195' | FEATURE %like%
-                                                    '^F198'| FEATURE %like%
-                                                    '^F199' | FEATURE %like%
-                                                    '^F200' | FEATURE %like%
-                                                    '^F201' | FEATURE %like%
-                                                    '^F131' ] <- 'WORKYARD')
+                                                     '^F021' | FEATURE %like%
+                                                     '^F026' | FEATURE %like%
+                                                     '^F027' | FEATURE %like%
+                                                     '^F028' | FEATURE %like%
+                                                     '^F030' | FEATURE %like%
+                                                     '^F031' | FEATURE %like%
+                                                     '^F032' | FEATURE %like%
+                                                     '^F033' | FEATURE %like%
+                                                     '^F034' | FEATURE %like%
+                                                     '^F035' | FEATURE %like%
+                                                     '^F036' | FEATURE %like%
+                                                     '^F037' | FEATURE %like%
+                                                     '^F038' | FEATURE %like%
+                                                     '^F041' | FEATURE %like%
+                                                     '^F042' | FEATURE %like%
+                                                     '^F043' | FEATURE %like%
+                                                     '^F044' | FEATURE %like%
+                                                     '^F045' | FEATURE %like%
+                                                     '^F047' | FEATURE %like%
+                                                     '^F048' | FEATURE %like%
+                                                     '^F049' | FEATURE %like%
+                                                     '^F051' | FEATURE %like%
+                                                     '^F053'| FEATURE %like%
+                                                     '^F055' | FEATURE %like%
+                                                     '^F056' | FEATURE %like%
+                                                     '^F057' | FEATURE %like%
+                                                     '^F058' | FEATURE %like%
+                                                     '^F060' | FEATURE %like%
+                                                     '^F061' | FEATURE %like%
+                                                     '^F063' | FEATURE %like%
+                                                     '^F064' | FEATURE %like%
+                                                     '^F065'| FEATURE %like%
+                                                     '^F067' | FEATURE %like%
+                                                     '^F072' | FEATURE %like%
+                                                     '^F073' | FEATURE %like%
+                                                     '^F074' | FEATURE %like%
+                                                     '^F075' | FEATURE %like%
+                                                     '^F076' | FEATURE %like%
+                                                     '^F077' | FEATURE %like%
+                                                     '^F078'| FEATURE %like%
+                                                     '^F079' | FEATURE %like%
+                                                     '^F089' | FEATURE %like%
+                                                     '^F090' | FEATURE %like%
+                                                     '^F091' | FEATURE %like%
+                                                     '^F093' | FEATURE %like%
+                                                     '^F094' | FEATURE %like%
+                                                     '^F098' | FEATURE %like%
+                                                     '^F099' | FEATURE %like%
+                                                     '^F100'| FEATURE %like%
+                                                     '^F101' | FEATURE %like%
+                                                     '^F102' | FEATURE %like%
+                                                     '^F103' | FEATURE %like%
+                                                     '^F104' | FEATURE %like%
+                                                     '^F110' | FEATURE %like%
+                                                     '^F111' | FEATURE %like%
+                                                     '^F112' | FEATURE %like%
+                                                     '^F119' | FEATURE %like%
+                                                     '^F123' | FEATURE %like%
+                                                     '^F124'| FEATURE %like%
+                                                     '^F125' | FEATURE %like%
+                                                     '^F127' | FEATURE %like%
+                                                     '^F128' | FEATURE %like%
+                                                     '^F129' | FEATURE %like%
+                                                     '^F132' | FEATURE %like%
+                                                     '^F133' | FEATURE %like%
+                                                     '^F136' | FEATURE %like%
+                                                     '^F137' | FEATURE %like%
+                                                     '^F139'| FEATURE %like%
+                                                     '^F140' | FEATURE %like%
+                                                     '^F142' | FEATURE %like%
+                                                     '^F143' | FEATURE %like%
+                                                     '^F144' | FEATURE %like%
+                                                     '^F145' | FEATURE %like%
+                                                     '^F148' | FEATURE %like%
+                                                     '^F150' | FEATURE %like%
+                                                     '^F154' | FEATURE %like%
+                                                     '^F157' | FEATURE %like%
+                                                     '^F159' | FEATURE %like%
+                                                     '^F161'| FEATURE %like%
+                                                     '^F163' | FEATURE %like%
+                                                     '^F164' | FEATURE %like%
+                                                     '^F165' | FEATURE %like%
+                                                     '^F166' | FEATURE %like%
+                                                     '^F168' | FEATURE %like%
+                                                     '^F170' | FEATURE %like%
+                                                     '^F171' | FEATURE %like%
+                                                     '^F172' | FEATURE %like%
+                                                     '^F173'| FEATURE %like%
+                                                     '^F176' | FEATURE %like%
+                                                     '^F179' | FEATURE %like%
+                                                     '^F180'| FEATURE %like%
+                                                     '^F181' | FEATURE %like%
+                                                     '^F183' | FEATURE %like%
+                                                     '^F184' | FEATURE %like%
+                                                     '^F185' | FEATURE %like%
+                                                     '^F188' | FEATURE %like%
+                                                     '^F190' | FEATURE %like%
+                                                     '^F191' | FEATURE %like%
+                                                     '^F192' | FEATURE %like%
+                                                     '^F193' | FEATURE %like%
+                                                     '^F195' | FEATURE %like%
+                                                     '^F198'| FEATURE %like%
+                                                     '^F199' | FEATURE %like%
+                                                     '^F200' | FEATURE %like%
+                                                     '^F201' | FEATURE %like%
+                                                     '^F131' ] <- 'WORKYARD')
 
 FINALCompiledB <- within(FINALCompiledB, COMPONENT[FEATURE %like% 
                                                      '^F001' | FEATURE %like%
@@ -1205,7 +1205,7 @@ FINALCompiledB <- within(FINALCompiledB, UNIT[FEATURE == 'F006'] <- NA)
 
 # Download CSV
 
-write.csv(FINALCompiledB,"87Church_CompiledDataset.csv", row.names = TRUE)
+write.csv(FINALCompiledB,"A5_87Church_CompiledDataset.csv", row.names = TRUE)
 
 # Please note, a series of transformations occurred outside of R due to ease
 # and available time. These include the updating of a number of DAACS artifact
