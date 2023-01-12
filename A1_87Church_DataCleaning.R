@@ -1214,4 +1214,4 @@ write.csv(FINALCompiledB,"A5_87Church_CompiledDataset.csv", row.names = TRUE)
 # hand due to available time. One critical addition is the vertical provenience 
 # information for F26 Staffordshire slipware ARL 22603.2 through .13. This data was added 
 # after the fact and was done by hand in the excel spreadsheet. These changes
-# are reflected in the "87Church_CompiledDataset_Fin.csv" file. 
+# are reflected in the "A6_87Church_CompiledDataset_Fin.csv" file. 
