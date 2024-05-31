@@ -1,6 +1,6 @@
 # 87ChurchStreet_PlattDissertation
 
-The following includes code and data file for final analyses used in Sarah E. Platt's 2022 dissertation (Syracuse University - Anthropology) _Entangled Lives in a Southern Metropolis: An Archaeology of Legacies at 87 Church Street, Charleston, South Carolina (1734-1771)_. All files are also available from the author by request. It is highly recommended by the author that all users of the following datasets reach out to the archaeology department at The Charleston Museum to indicate their plans for use.
+The following includes code and data file for final analyses used in Sarah E. Platt's 2022 dissertation (Syracuse University - Anthropology) _Entangled Lives in a Southern Metropolis: An Archaeology of Legacies at 87 Church Street, Charleston, South Carolina (1734-1771)_. All files are also available from the author by request. It is highly recommended by the author that all users of the following datasets reach out to the archaeology department at The Charleston Museum to indicate their plans for use. The data is officially archived at the Museum, and any updates to said data would have to be retrieved directly from the archaeology department as the one provided here has not been updated since the completion of the author's dissertation.
 
 The following is a reproduction of Appendix 2 in the dissertation, which outlines each analysis, their associated code scripts, and associated data files. These designations correspond to the included files in the repository. 
 
